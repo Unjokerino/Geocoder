@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Геокодер</title>
+    <link rel="stylesheet" href="css/index.css" />
+    <script
+      src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=eac0a07b-e0e9-4dd0-8f3f-d6e6000f0255"
+      type="text/javascript"
+    ></script>
+    <script defer src="js/index.js"></script>
+  </head>
+  <body>
+    <div class="map_container">
+      <h1>Адрес</h1>
+      <div class="map_menu">
+        <input placeholder="Укажите адрес" id="map_adress" type="text" />
+        <input placeholder="Координаты" id="map_coords" type="text" />
+      </div>
+      <div class="message"></div>
+      <div id="map"></div>
+    </div>
+  </body>
+</html>
