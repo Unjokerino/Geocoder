@@ -17,7 +17,13 @@ function init() {
       searchControlProvider: null
     }
   );
-
+  current_adress_input.addEventListener("change", function(e) {
+    if (e.target.value === "") {
+      console.log("gdsf");
+      myMap.geoObjects.remove(myPlacemark);
+      myPlacemark = false;
+    }
+  });
   // Слушаем клик на карте.
   myMap.events.add("click", function(e) {
     var coords = e.get("coords");
