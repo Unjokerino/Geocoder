@@ -27,6 +27,51 @@ body {
   width: 100%;
 }
 
+.map_container .text_input {
+  -webkit-box-flex: 11;
+      -ms-flex: 11;
+          flex: 11;
+  padding: 8px 16px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  border: 1px solid #d6d6d6;
+  border-radius: 5px;
+}
+
+.map_container #map_clear_input {
+  cursor: pointer;
+  visibility: visible;
+  opacity: 1;
+  height: 25px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 25px;
+}
+
+.map_container #map_clear_input:hover {
+  opacity: .6;
+}
+
+.map_container #map_clear_input .clear-icon {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background: 50% 50% no-repeat;
+  -webkit-transition: opacity .1s ease-out;
+  transition: opacity .1s ease-out;
+  opacity: .16;
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyIDIyYzUuNTIzIDAgMTAtNC40NzcgMTAtMTBTMTcuNTIzIDIgMTIgMiAyIDYuNDc3IDIgMTJzNC40NzcgMTAgMTAgMTB6TTcuMjkzIDcuMjkzYTEgMSAwIDAgMSAxLjQxNCAwTDEyIDEwLjU4NmwzLjI5My0zLjI5M2ExIDEgMCAxIDEgMS40MTQgMS40MTRMMTMuNDE0IDEybDMuMjkzIDMuMjkzYTEgMSAwIDEgMS0xLjQxNCAxLjQxNEwxMiAxMy40MTRsLTMuMjkzIDMuMjkzYTEgMSAwIDEgMS0xLjQxNC0xLjQxNEwxMC41ODYgMTIgNy4yOTMgOC43MDdhMSAxIDAgMCAxIDAtMS40MTR6IiBmaWxsPSIjMDAwIi8+PC9zdmc+);
+}
+
 .map_container > * {
   margin-bottom: 32px;
 }
@@ -38,9 +83,9 @@ body {
 }
 
 .map_container .map_menu #map_adress {
-  -webkit-box-flex: 11;
-      -ms-flex: 11;
-          flex: 11;
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
 }
 
 .map_container .map_menu #map_coords {
@@ -48,9 +93,6 @@ body {
 }
 
 .map_container input {
-  padding: 8px 16px;
   border: none;
-  border: 1px solid #d6d6d6;
-  border-radius: 5px;
 }
 /*# sourceMappingURL=index.css.map */

@@ -4,6 +4,7 @@ let current_coords = "";
 let error_kinds = ["hydro", "vegetation"];
 let current_adress_input = document.querySelector("#map_adress");
 let current_coords_input = document.querySelector("#map_coords");
+let clear_input_btn = document.querySelector("#map_clear_input");
 
 function init() {
   var placeMark;
@@ -15,15 +16,72 @@ function init() {
       controls: ["zoomControl", "geolocationControl"]
     },
     {
+      suppressMapOpenBlock: true,
       searchControlProvider: null
     }
   );
   current_adress_input.addEventListener("change", function(e) {
+    let value = e.target.value;
+    current_adress_input.value = filterAdress(value).join();
+
+    document.querySelector(".message").innerHTML = "";
+    ymaps
+      .geocode(value, {
+        results: 3
+      })
+      .then(function(res) {
+        var firstGeoObject = res.geoObjects.get(0);
+
+        res.geoObjects.each(elem => {
+          let option = document.createElement("option");
+          let adress = filterAdress(
+            elem.properties.get("metaDataProperty.GeocoderMetaData.text")
+          );
+          option.innerHTML = adress;
+          option.value = adress;
+          document.querySelector("#suggestions").append(option);
+        });
+
+        coords = firstGeoObject.geometry.getCoordinates();
+        kind = firstGeoObject.properties.get(
+          "metaDataProperty.GeocoderMetaData.kind"
+        );
+        console.log(coords, kind);
+        error_kinds.forEach(error => {
+          kind === error ? showError() : "";
+        });
+
+        bounds = firstGeoObject.properties.get("boundedBy");
+
+        if (placeMark) {
+          placeMark.geometry.setCoordinates(coords);
+        } else {
+          placeMark = createPlacemark(coords);
+          myMap.geoObjects.add(placeMark);
+
+          placeMark.events.add("dragend", function() {
+            getAddress(placeMark.geometry.getCoordinates());
+          });
+        }
+
+        myMap.setBounds(bounds, {
+          checkZoomRange: true
+        });
+      });
     if (e.target.value === "") {
-      myMap.geoObjects.remove(placeMark);
-      placeMark = false;
+      removePlaceMark();
     }
   });
+
+  clear_input_btn.addEventListener("click", () => {
+    current_adress_input.value = "";
+    removePlaceMark();
+  });
+
+  function removePlaceMark() {
+    myMap.geoObjects.remove(placeMark);
+    placeMark = false;
+  }
 
   myMap.events.add("click", function(e) {
     var coords = e.get("coords");
@@ -52,18 +110,6 @@ function init() {
       }
     );
   }
-  var suggestView = new ymaps.SuggestView("map_adress", {
-    provider: {
-      suggest: function(request, options) {
-        var parseItems = ymaps
-          .suggest("Россия, " + request)
-          .then(function(items) {
-            return filterAdresses(items);
-          });
-        return parseItems;
-      }
-    }
-  });
 
   function filterAdresses(items) {
     for (var i = 0; i < items.length; i++) {
@@ -81,6 +127,7 @@ function init() {
 
       items[i].displayName = newDisplayName.join();
     }
+
     return items;
   }
 
@@ -96,43 +143,6 @@ function init() {
     }
     return newDisplayName;
   }
-
-  suggestView.events.add("select", function(e) {
-    current_adress_input.value = filterAdress(e.get("item").value).join();
-    document.querySelector(".message").innerHTML = "";
-    ymaps
-      .geocode(e.get("item").value, {
-        results: 1
-      })
-      .then(function(res) {
-        var firstGeoObject = res.geoObjects.get(0),
-          coords = firstGeoObject.geometry.getCoordinates();
-        kind = firstGeoObject.properties.get(
-          "metaDataProperty.GeocoderMetaData.kind"
-        );
-
-        error_kinds.forEach(error => {
-          kind === error ? showError() : "";
-        });
-
-        bounds = firstGeoObject.properties.get("boundedBy");
-
-        if (placeMark) {
-          placeMark.geometry.setCoordinates(coords);
-        } else {
-          placeMark = createPlacemark(coords);
-          myMap.geoObjects.add(placeMark);
-
-          placeMark.events.add("dragend", function() {
-            getAddress(placeMark.geometry.getCoordinates());
-          });
-        }
-
-        myMap.setBounds(bounds, {
-          checkZoomRange: true
-        });
-      });
-  });
 
   function showError() {
     document.querySelector(".message").innerHTML =
