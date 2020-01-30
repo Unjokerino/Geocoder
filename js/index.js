@@ -26,7 +26,7 @@ function init() {
 
     document.querySelector(".message").innerHTML = "";
     ymaps
-      .geocode(value, {
+      .geocode("Россия, " + value, {
         results: 3
       })
       .then(function(res) {
