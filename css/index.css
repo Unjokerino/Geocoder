@@ -13,6 +13,10 @@ body {
   height: 320px;
 }
 
+.error {
+  color: #ff0000;
+}
+
 .header {
   padding: 5px;
 }
