@@ -20,69 +20,81 @@ function init() {
       searchControlProvider: null
     }
   );
+
+  current_adress_input.addEventListener("input", checkClear);
+
+  current_adress_input.addEventListener("oninput", checkClear);
+
   current_adress_input.addEventListener("change", function(e) {
+    checkClear();
     let value = e.target.value;
     current_adress_input.value = filterAdress(value).join();
+    if (value !== "") {
+      document.querySelector(".message").innerHTML = "";
+      ymaps
+        .geocode("Россия, " + value, {
+          results: 3
+        })
+        .then(function(res) {
+          var firstGeoObject = res.geoObjects.get(0);
 
-    document.querySelector(".message").innerHTML = "";
-    ymaps
-      .geocode("Россия, " + value, {
-        results: 3
-      })
-      .then(function(res) {
-        var firstGeoObject = res.geoObjects.get(0);
-
-        res.geoObjects.each(elem => {
-          let option = document.createElement("option");
-          let adress = filterAdress(
-            elem.properties.get("metaDataProperty.GeocoderMetaData.text")
-          );
-          option.innerHTML = adress;
-          option.value = adress;
-          document.querySelector("#suggestions").append(option);
-        });
-
-        coords = firstGeoObject.geometry.getCoordinates();
-        kind = firstGeoObject.properties.get(
-          "metaDataProperty.GeocoderMetaData.kind"
-        );
-        name = firstGeoObject.properties.get(
-          "metaDataProperty.GeocoderMetaData.text"
-        );
-        current_adress_input.value = filterAdress(name);
-        console.log(coords, kind);
-        error_kinds.forEach(error => {
-          kind === error
-            ? showError(
-                "Не удалось точно определить адрес. Введите адрес снова или передвиньте метку на карте туда, где находится объект"
-              )
-            : "";
-        });
-
-        bounds = firstGeoObject.properties.get("boundedBy");
-        current_coords_input.value = coords;
-        if (placeMark) {
-          placeMark.geometry.setCoordinates(coords);
-        } else {
-          placeMark = createPlacemark(coords);
-          myMap.geoObjects.add(placeMark);
-
-          placeMark.events.add("dragend", function() {
-            getAddress(placeMark.geometry.getCoordinates());
+          res.geoObjects.each(elem => {
+            let option = document.createElement("option");
+            let adress = filterAdress(
+              elem.properties.get("metaDataProperty.GeocoderMetaData.text")
+            );
+            option.innerHTML = adress;
+            option.value = adress;
+            document.querySelector("#suggestions").append(option);
           });
-        }
 
-        myMap.setBounds(bounds, {
-          checkZoomRange: true
+          coords = firstGeoObject.geometry.getCoordinates();
+          kind = firstGeoObject.properties.get(
+            "metaDataProperty.GeocoderMetaData.kind"
+          );
+          name = firstGeoObject.properties.get(
+            "metaDataProperty.GeocoderMetaData.text"
+          );
+          current_adress_input.value = filterAdress(name);
+
+          error_kinds.forEach(error => {
+            kind === error
+              ? showError(
+                  "Не удалось точно определить адрес. Введите адрес снова или передвиньте метку на карте туда, где находится объект"
+                )
+              : "";
+          });
+
+          bounds = firstGeoObject.properties.get("boundedBy");
+          current_coords_input.value = coords;
+          if (kind !== "country") {
+            if (placeMark) {
+              placeMark.geometry.setCoordinates(coords);
+            } else {
+              placeMark = createPlacemark(coords);
+              myMap.geoObjects.add(placeMark);
+
+              placeMark.events.add("dragend", function() {
+                getAddress(placeMark.geometry.getCoordinates());
+              });
+            }
+
+            myMap.setBounds(bounds, {
+              checkZoomRange: true
+            });
+          }
+          current_adress_input.value = value;
+          checkClear();
         });
-      });
-    if (e.target.value === "") {
+    } else {
       removePlaceMark();
     }
   });
 
   clear_input_btn.addEventListener("click", () => {
     current_adress_input.value = "";
+    showError("");
+    checkClear();
     removePlaceMark();
   });
 
@@ -152,6 +164,16 @@ function init() {
     return newDisplayName;
   }
 
+  function checkClear() {
+    let value = current_adress_input.value;
+
+    if (value !== "") {
+      clear_input_btn.style.visibility = "visible";
+    } else {
+      clear_input_btn.style.visibility = "hidden";
+    }
+  }
+
   function showError(message) {
     document.querySelector(
       ".message"
@@ -178,7 +200,9 @@ function init() {
 
       current_coords = coords;
       current_coords_input.value = current_coords;
+
       current_adress_input.value = filterAdress(current_adress);
+      checkClear();
     });
   }
 }

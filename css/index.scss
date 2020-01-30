@@ -21,7 +21,7 @@
       padding: 5px;
   }
 
-  .map_container {
+  #map_container {
       margin: auto;
       max-width: 877px;
       width: 100%;
@@ -36,9 +36,12 @@
       }
 
       #map_clear_input {
+
+
           &:hover {
               opacity: .6;
           }
+
 
           cursor: pointer;
           visibility: visible;
@@ -48,6 +51,7 @@
           justify-content: center;
           align-items: center;
           width: 25px;
+          visibility: hidden;
 
           .clear-icon {
               display: block;
@@ -70,12 +74,8 @@
           display: flex;
 
           #map_adress {
-
-              &::before,
-              &::after {
-                  content: '';
-                  position: absolute;
-                  pointer-events: none;
+              &::-webkit-calendar-picker-indicator {
+                  display: none;
               }
 
               flex: 1;
