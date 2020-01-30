@@ -11,7 +11,7 @@ function init() {
   myMap = new ymaps.Map(
     "map",
     {
-      center: [57.1076545712598, 65.57202407215911],
+      center: [57.1076545712598, 65.57202407215911], // Координаты центра карты
       zoom: 12,
       controls: ["zoomControl", "geolocationControl"]
     },
