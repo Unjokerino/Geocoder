@@ -1,7 +1,7 @@
 ymaps.ready(init);
 let current_adress = "";
 let current_coords = "";
-let error_kinds = ["hydro", "vegetation"];
+let error_kinds = ["hydro", "vegetation", "country", "district"];
 let current_adress_input = document.querySelector("#map_adress");
 let current_coords_input = document.querySelector("#map_coords");
 let clear_input_btn = document.querySelector("#map_clear_input");
@@ -46,13 +46,21 @@ function init() {
         kind = firstGeoObject.properties.get(
           "metaDataProperty.GeocoderMetaData.kind"
         );
+        name = firstGeoObject.properties.get(
+          "metaDataProperty.GeocoderMetaData.text"
+        );
+        current_adress_input.value = filterAdress(name);
         console.log(coords, kind);
         error_kinds.forEach(error => {
-          kind === error ? showError() : "";
+          kind === error
+            ? showError(
+                "Не удалось точно определить адрес. Введите адрес снова или передвиньте метку на карте туда, где находится объект"
+              )
+            : "";
         });
 
         bounds = firstGeoObject.properties.get("boundedBy");
-
+        current_coords_input.value = coords;
         if (placeMark) {
           placeMark.geometry.setCoordinates(coords);
         } else {
@@ -144,9 +152,10 @@ function init() {
     return newDisplayName;
   }
 
-  function showError() {
-    document.querySelector(".message").innerHTML =
-      "<div class='error'>  Не удалось точно определить адрес. Введите адрес снова или передвиньте метку на карте туда, где находится объект</div>";
+  function showError(message) {
+    document.querySelector(
+      ".message"
+    ).innerHTML = `<div class='error'> ${message} </div>`;
   }
 
   function getAddress(coords) {
@@ -158,9 +167,15 @@ function init() {
       );
 
       error_kinds.forEach(error => {
-        kind === error ? showError() : "";
+        kind === error
+          ? showError(
+              "Не удалось точно определить адрес. Введите адрес снова или передвиньте метку на карте туда, где находится объект"
+            )
+          : "";
       });
+
       current_adress = firstGeoObject.getAddressLine();
+
       current_coords = coords;
       current_coords_input.value = current_coords;
       current_adress_input.value = filterAdress(current_adress);

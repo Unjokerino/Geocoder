@@ -39,6 +39,7 @@
           &:hover {
               opacity: .6;
           }
+
           cursor: pointer;
           visibility: visible;
           opacity: 1;
@@ -69,7 +70,18 @@
           display: flex;
 
           #map_adress {
+
+              &::before,
+              &::after {
+                  content: '';
+                  position: absolute;
+                  pointer-events: none;
+              }
+
               flex: 1;
+              -webkit-appearance: none;
+              -moz-appearance: none;
+              appearance: none;
           }
 
           #map_coords {
@@ -81,5 +93,46 @@
 
           border: none;
 
+      }
+
+      .map_adress {
+          display: inline-block;
+          position: relative;
+      }
+
+      .map_adress:before,
+      .map_adress:after {
+          content: '';
+          position: absolute;
+          pointer-events: none;
+      }
+
+      .map_adress:after {
+          top: 0;
+          right: 0;
+          width: 20px;
+          height: 100%;
+          background: #C0C0C0;
+          transition: .3s;
+      }
+
+      .map_adress:before {
+          top: 50%;
+          right: 5px;
+          margin-top: -5px;
+          width: 0;
+          height: 0;
+          border-style: solid;
+          border-width: 10px 5px 0 5px;
+          border-color: #000 transparent transparent transparent;
+          z-index: 1;
+      }
+
+      .map_adress:hover:before {
+          border-top-color: #fff;
+      }
+
+      .map_adress:hover:after {
+          background: #000;
       }
   }
